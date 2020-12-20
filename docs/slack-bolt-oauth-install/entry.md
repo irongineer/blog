@@ -1,5 +1,7 @@
 # Slack Bolt で簡単に複数ワークスペースにインストールできるアプリを開発しよう！（TypeScript, Lambda, Serverless Framework によるサンプルコード付き）
 
+**記事のURL: https://qiita.com/irongineer/items/9f0b997bbf62ae0d0e06**
+
 ![Slack_User-token-install.gif](assets/Slack_User-token-install.gif)
 
 # はじめに
@@ -97,7 +99,7 @@ Slack では、ユーザーがアプリをインストールするとき、ユ�
 そのワークスペースでの Bot やユーザーのトークンをアプリに渡しています。
 （おそらく Slack を利用されている方は、アプリをインストールするときにこんな画面を見たことがあるんじゃないでしょうか）
 
-![assets/Slack_User-token-install.png](assets/Slack_User-token-install.png)
+![Slack_User-token-install.png](assets/Slack_User-token-install.png)
 
 さて、Slack で OAuth フローを実装するためには、上述の **Bot Token** や **User Token** を利用する代わりに、
 **Client ID** と **Client Secret** が必要になります（こちらも Slack アプリ管理コンソールから取得できます）。
@@ -249,7 +251,7 @@ const app = new App({
 （まだ作成していない人は、
 私は **スクワットをした回数を任意のチャンネルに報告するアプリ「スクワットしとく？」** を開発しました。
 
-![assets/Slack_Training-result-normal.gif](assets/Slack_Training-result-normal.gif)
+![Slack_Training-result-normal.gif](assets/Slack_Training-result-normal.gif)
 
 **世界中の人に健康になってほしいため**、これを複数ワークスペースにインストールさせるようにしてみましょう。
 
@@ -495,6 +497,10 @@ const buildSlackUrl = (url: string): string =>
 アプリを動かしてみると、**スクワットの結果に応じたステータス**が有効になっていることが分かります。
 
 ![Slack_Training-result-status.gif](assets/Slack_Training-result-status.gif)
+
+![Slack_Status-done.png](assets/Slack_Status-done.png)
+
+![Slack_Status-undone.png](assets/Slack_Status-undone.png)
 
 User スコープの指定以外にも、OAuth の設定をカスタマイズすることは可能です。
 気になる方は[OAuth ライブラリのドキュメント](https://slack.dev/node-slack-sdk/oauth#generating-an-installation-url)を読んでみてください。
