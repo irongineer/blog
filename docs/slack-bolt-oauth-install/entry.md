@@ -157,6 +157,7 @@ curl -F code=1234 -F client_id=3336676.569200954261 -F client_secret=ABCDEFGH ht
 ```
 
 成功すると以下のようなレスポンスが返ってきます。
+（以下は公式サイトのレスポンス例を転記しています）
 
 ```json
 {
@@ -304,7 +305,7 @@ Redirect URL を入力したら、`Done` をクリックし、`Save URLs` をク
 今まで利用していた Bot Token や User Token はもう不要です。
 
 ```diff:.env
-export SLACK_SIGNING_SECRET=c6ccbf0f52ab8db407c5d3c5191438c8
+export SLACK_SIGNING_SECRET=a56yxxxxxxxxxxxxx
 - SLACK_BOT_TOKEN=XOXO-------
 +export SLACK_CLIENT_ID=1162xxxxxx.1612xxxxxx
 +export SLACK_CLIENT_SECRET=924axxxxxx
@@ -356,7 +357,10 @@ export SLACK_SIGNING_SECRET=c6ccbf0f52ab8db407c5d3c5191438c8
 
 ローカルでアプリを起動し、`ngrok` も起動した状態で、以下の URL をブラウザのアドレスバーに貼り付けます。
 
-`https://foo.ngrok.io/dev/slack/install`（`foo` の箇所は `ngrok` を起動するときに発行されるサブドメインの文字列です）
+`https://foo.ngrok.io/dev/slack/install`
+（`foo` の箇所は `ngrok` を起動するときに発行されるサブドメインの文字列です。無料版を利用している場合は再起動する度にサブドメインが変化します）
+
+※ この記事ではイメージを付きやすくするため既にプロセスを終了した ngrok の URL を記載していますが、再起動を忘れた状態で URL を公開すると外部からローカル環境に攻撃を受ける可能性があるため、基本的には公開しないようにしてください。
 
 すると、`Add to Slack` というボタンが表示されます。
 
@@ -566,7 +570,7 @@ Bolt for JavaScript は TypeScript で作成されているため基本的には
 ローカル開発したい場合、[ngrok](https://ngrok.com/) が便利です。
 ローカル PC 上で稼働しているサービスを外部公開できるため、実際にサーバーと通信しないと動作確認できないようなサービスでも通信テストをすることが可能です。
 HTTPS 通信にも対応していて素敵。
-唯一のデメリットは起動し直すたびにサブドメインが変更されることです・・・（有償プランであれば固定 URL を取得できるようです）
+唯一のデメリットは起動し直すたびにサブドメインが変更されることです・・・（有料版であれば固定 URL を取得できるようです）
 
 詳しくは以下の記事を見てみてください。
 
