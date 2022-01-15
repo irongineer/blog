@@ -1,0 +1,127 @@
+@startuml sample04
+
+title Awesome service ~ Monitoring ~
+left to right direction
+
+' ### Import modules ###
+!define AzurePuml https://raw.githubusercontent.com/plantuml-stdlib/Azure-PlantUML/release/2-1/dist
+!includeurl AzurePuml/AzureCommon.puml
+!includeurl AzurePuml/General/Azure.puml
+!includeurl AzurePuml/AIMachineLearning/AzureBotService.puml
+!includeurl AzurePuml/AzureSimplified.puml
+
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v10.0/dist
+!includeurl AWSPuml/AWSCommon.puml
+!includeurl AWSPuml/General/Client.puml
+!includeurl AWSPuml/General/User.puml
+!includeurl AWSPuml/GroupIcons/Region.puml
+!includeurl AWSPuml/GroupIcons/Cloudalt.puml
+!includeurl AWSPuml/GroupIcons/ServerContents.puml
+
+!includeurl AWSPuml/SecurityIdentityCompliance/IdentityandAccessManagement.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/IdentityAccessManagementRole.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/IdentityAccessManagementPermissions.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/IdentityAccessManagementAWSSTSAlternate.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/WAF.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/WAFFilteringRule.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/Shield.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/CertificateManager.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/KeyManagementService.puml
+!includeurl AWSPuml/ManagementGovernance/SystemsManagerParameterStore.puml
+!includeurl AWSPuml/ManagementGovernance/CloudWatch.puml
+!includeurl AWSPuml/ManagementGovernance/CloudwatchLogs.puml
+!includeurl AWSPuml/ManagementGovernance/CloudwatchAlarm.puml
+!includeurl AWSPuml/ManagementGovernance/CloudwatchRule.puml
+!includeurl AWSPuml/ManagementGovernance/CloudTrail.puml
+!includeurl AWSPuml/ManagementGovernance/Chatbot.puml
+!includeurl AWSPuml/DeveloperTools/XRay.puml
+!includeurl AWSPuml/DeveloperTools/CodeBuild.puml
+
+!includeurl AWSPuml/NetworkingContentDelivery/Route53.puml
+!includeurl AWSPuml/NetworkingContentDelivery/CloudFront.puml
+!includeurl AWSPuml/NetworkingContentDelivery/CloudfrontFunctions.puml
+!includeurl AWSPuml/NetworkingContentDelivery/ElasticLoadBalancingApplicationLoadBalancer.puml
+!includeurl AWSPuml/ApplicationIntegration/APIGateway.puml
+!includeurl AWSPuml/ApplicationIntegration/SimpleNotificationService.puml
+!includeurl AWSPuml/ApplicationIntegration/SimpleNotificationServiceTopic.puml
+!includeurl AWSPuml/ApplicationIntegration/SimpleNotificationServiceEmailNotification.puml
+!includeurl AWSPuml/BusinessApplications/SimpleEmailServiceEmail.puml
+
+!includeurl AWSPuml/Containers/ElasticContainerService.puml
+!includeurl AWSPuml/Compute/EC2.puml
+!includeurl AWSPuml/Compute/Lambda.puml
+!includeurl AWSPuml/Compute/LambdaLambdaFunction.puml
+!includeurl AWSPuml/Storage/SimpleStorageService.puml
+!includeurl AWSPuml/Database/Database.puml
+!includeurl AWSPuml/Database/DynamoDB.puml
+!includeurl AWSPuml/Database/DynamoDBTable.puml
+!includeurl AWSPuml/AWSSimplified.puml
+!include ./custom.pu
+
+
+Cloudalt(atttendanceMSA, Awesome service, "Awesome service [prod]") {
+  ServerContents(awesomeService, Awesome service, "Awesome service") {
+    CloudFront(CloudFront, "CloudFront", "CloudFront")
+    SimpleStorageService(S3Static, "S3\nSSE (AES-256)\nStatic website hosting", "Delivery SPA")
+    APIGateway(apiGateway, "API Gateway", "API Gateway")
+    Lambda(lambdaAuthorizer, "Authorizer", "Check token")
+    Lambda(lambdaFunction, "Lambda", "Lambda")
+    DynamoDB(dynamoDB, "DynamoDB\nSSE (AES-256)", "DynamoDB")
+    Route53(Route53, "Route 53", "Resolve domain")
+    CertificateManager(ACM, "ACM", "Get certificates")
+  }
+
+  CloudTrail(cloudTrail, "CloudTrail", "CloudTrail")
+  CloudWatch(CloudWatch, "CloudWatch", "CloudWatch") {
+    CloudWatchLogs(cloudWatchLogs, "CloudWatch Logs", "CloudWatch Logs")
+    CloudWatchRule(cloudWatchRule, "CloudWatch Rule", "CloudWatch Rule")
+    CloudWatchAlarm(cloudWatchAlarm, "CloudWatch Alarm", "CloudWatch Alarm")
+  }
+  SimpleNotificationService(SNS, "SNS", "SNS") {
+    SimpleNotificationServiceTopic(snsTopic, "Topic", "Topic")
+    SimpleNotificationServiceEmailNotification(snsEmail, "Email", "Email")
+  }
+  Chatbot(chatbot, "Chatbot", "Chatbot")
+  XRay(xRay, "X-Ray", "X-Ray")
+  SimpleStorageService(s3Logs, "S3\nSSE (AES-256)\nIP & IAM Restrictions\nCollected logs", "Store logs")
+  SimpleStorageService(s3Result, "S3\nSSE (AES-256)\nIP & IAM Restrictions\nInvestigation results", "Store Investigation results")
+}
+
+User(user, User, User)
+
+together {
+  User(developer, Developer, Developer)
+  Slack(slack, Slack, Slack)
+  SimpleEmailServiceEmail(email, "Email", "Email")
+}
+
+
+' ### Request flow ###
+awesomeService 0--> cloudTrail #red : Collect logs
+awesomeService 0--> cloudWatchLogs #red : Collect logs
+awesomeService 0--> xRay #red : Trace requests
+xRay 0--> cloudWatchRule #red
+cloudTrail 0--> s3Logs #red : Store logs
+cloudWatchLogs 0--> s3Logs #red : Store logs
+cloudWatchLogs 0--> cloudWatchRule #red
+cloudWatchRule 0--> cloudWatchAlarm #red : Generate alarms according to the rules
+cloudWatchAlarm 0--> snsTopic #red : Send notifications to SNS topics
+snsTopic 0--> snsEmail #red
+snsEmail 0---> email #red : Send notifications via Email
+snsTopic 0--> chatbot #red
+chatbot 0---> slack #red : Send notifications via Slack
+
+user 0--> apiGateway #red : Send HTTP request
+apiGateway 0--> lambdaAuthorizer #red : Verify token
+lambdaAuthorizer 0..> apiGateway #red : Allow | Deny\nGenerate Principal & Policy
+apiGateway 0--> lambdaFunction #red : Access to API \nif request is authorized
+lambdaFunction 0--> dynamoDB #red : Query data by tenantId + userId
+lambdaFunction 0---> s3Result #red : Store Investigation results
+
+developer 0..> email #red
+developer 0..> slack #red
+developer 0..> cloudWatchLogs #red  : View logs
+developer 0..> xRay #red  : Analyze & Debug
+developer 0..> s3Result #red
+
+@enduml

@@ -1,0 +1,52 @@
+@startuml sample02
+
+title AWS Simple serverless architecture
+left to right direction
+
+' ① アイコンの定義 ＆ インポート
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v10.0/dist
+!includeurl AWSPuml/AWSCommon.puml
+!includeurl AWSPuml/General/Client.puml
+!includeurl AWSPuml/GroupIcons/Cloudalt.puml
+!includeurl AWSPuml/ApplicationIntegration/APIGateway.puml
+!includeurl AWSPuml/Compute/Lambda.puml
+!includeurl AWSPuml/Database/DynamoDB.puml
+!includeurl AWSPuml/AWSSimplified.puml
+
+!define AzurePuml https://raw.githubusercontent.com/plantuml-stdlib/Azure-PlantUML/release/2-1/dist
+!includeurl AzurePuml/AzureCommon.puml
+!includeurl AzurePuml/General/Azure.puml
+!includeurl AzurePuml/AIMachineLearning/AzureBotService.puml
+!includeurl AzurePuml/AzureSimplified.puml
+!include ./custom.pu
+
+' ② 利用するアイコンを宣言
+Client(clientUser, User, User client device)
+
+
+Teams(teams, "Teams", "Teams")
+
+Slack(slack, "Slack", "Slack")
+
+
+Azure(azure, [Awesome Service] Azure ,"Azure") {
+  AzureBotService(azureBotService, "Azure Bot Service", "Azure Bot Service")
+}
+
+
+Cloudalt(aws, Awesome Service [prod], AWS) {
+  APIGateway(apiGateway, "API Gateway", "API Gateway")
+  Lambda(lambda, "Lambda", "Lambda")
+  DynamoDB(dynamodb, "DynamoDB", "DynamoDB")
+}
+
+' ③ アイコンの関係を記述
+clientUser 0--> teams: Send command
+clientUser 0--> slack: Send command
+teams 0--> azureBotService: Connect Bot service
+slack 0--> azureBotService: Connect Bot service
+azureBotService 0---> apiGateway: Send Event request
+apiGateway 0--> lambda: Invoke function
+lambda 0--> dynamodb: Put item
+
+@enduml
