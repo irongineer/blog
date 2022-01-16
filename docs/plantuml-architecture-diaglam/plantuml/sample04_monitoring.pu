@@ -1,4 +1,4 @@
-@startuml sample04
+@startuml sample04_monitoring
 
 title Awesome service ~ Monitoring ~
 left to right direction

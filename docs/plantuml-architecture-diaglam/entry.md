@@ -1,12 +1,8 @@
-# 長く維持されるシステム構成図のつくりかた 〜 PlantUML で継続的に AWS/GCP/Azure アーキテクチャ図をメンテする仕組み 〜
-
 本記事は株式会社 [Works Human Intelligence](https://www.works-hi.co.jp/) の [アドベントカレンダー](https://qiita.com/advent-calendar/2021/advent-works-hi) の 20 日目の記事となります。
 
 昨日は @h53 さんの [情報処理安全確保支援士試験（SC）合格体験記](https://qiita.com/h53/items/c3867ee6194663f19284) でした。
 
 ## はじめに
-
-本記事は株式会社 [Works Human Intelligence](https://www.works-hi.co.jp/) の [アドベントカレンダー](https://qiita.com/advent-calendar/2021/advent-works-hi) の 20 日目の記事となります。
 
 みなさん、構成図描いていますか？
 
@@ -153,7 +149,7 @@ VSCode 左サイドバーにある拡張機能メニューを開きます。
 検索ボックスに「PlantUML」と入力し、表示された以下の拡張機能をインストールします。
 [PlantUML - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=jebbs.plantuml)
 
-![](assets/vscode-extension-plantuml.png)
+![vscode-extension-plantuml.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/110368/855cf7fe-79d9-d6c4-e330-bed1f99bdd8e.png)
 
 #### VSCode 拡張機能の設定（PlantUML Server 利用時のみ）
 
@@ -166,7 +162,7 @@ VSCode 左サイドバーにある拡張機能メニューを開きます。
 - Plantuml: Server
   - http://localhost:8080
 
-![](assets/vscode-extension-plantuml-settings.png)
+![vscode-extension-plantuml-settings.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/110368/902af28e-e4e8-5bad-a1d8-8ce8fa709537.png)
 
 ただし、私の端末（Mac）ではこれらの設定を行わずとも次の手順の Preview ができたため、次に進んで描画できる人は特に設定は不要です（JAVA と GraphViz が端末にインストールされている必要があるようです。無意識にインストールしていた可能性はあります・・・）。
 Ubuntu 20.04 では設定なしで Preview を実行することはできませんでした。
@@ -406,7 +402,7 @@ lambda 0--> dynamodb: Put item
 
 </div></details>
 
-![](assets/sample02.png)
+![sample02.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/110368/0c3426be-441c-c9ee-1952-56e924cba1d8.png)
 
 ### サンプル
 
@@ -554,9 +550,131 @@ developer 0..> s3Result #red
 
 </div></details>
 
-![](assets/sample04_monitoring.png)
+![sample04_monitoring.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/110368/b96e14cb-96aa-c354-aa0a-348f1a2f5457.png)
 
 #### （3） CI/CD
+
+<details><summary>PlantUML コード</summary><div>
+
+```
+@startuml sample05_cicd
+
+title Awesome service ~ CI/CD ~
+' left to right direction
+!define AzurePuml https://raw.githubusercontent.com/plantuml-stdlib/Azure-PlantUML/release/2-1/dist
+!includeurl AzurePuml/AzureCommon.puml
+!includeurl AzurePuml/General/Azure.puml
+!includeurl AzurePuml/AzureSimplified.puml
+
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v10.0/dist
+!includeurl AWSPuml/AWSCommon.puml
+!includeurl AWSPuml/General/Client.puml
+!includeurl AWSPuml/GroupIcons/Cloud.puml
+!includeurl AWSPuml/GroupIcons/Cloudalt.puml
+
+!includeurl AWSPuml/SecurityIdentityCompliance/IdentityAccessManagementRole.puml
+!includeurl AWSPuml/NetworkingContentDelivery/CloudFront.puml
+!includeurl AWSPuml/ApplicationIntegration/APIGateway.puml
+!includeurl AWSPuml/Compute/Lambda.puml
+!includeurl AWSPuml/Storage/SimpleStorageService.puml
+!includeurl AWSPuml/Database/DynamoDB.puml
+!includeurl AWSPuml/DeveloperTools/CodeBuild.puml
+!includeurl AWSPuml/DeveloperTools/CloudDevelopmentKit.puml
+!includeurl AWSPuml/ManagementGovernance/CloudFormation.puml
+!includeurl AWSPuml/ManagementGovernance/CloudFormationChangeSet.puml
+!includeurl AWSPuml/ManagementGovernance/CloudFormationStack.puml
+!includeurl AWSPuml/ManagementGovernance/CloudFormationTemplate.puml
+
+!includeurl AWSPuml/AWSSimplified.puml
+
+!define ICONURL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v2.3.0
+!includeurl ICONURL/common.puml
+!includeurl ICONURL/devicons/github_badge.puml
+!includeurl ICONURL/devicons/git.puml
+!includeurl ICONURL/devicons/git_branch.puml
+!includeurl ICONURL/devicons/git_pull_request.puml
+!includeurl ICONURL/devicons/git_merge.puml
+
+!include ./custom.pu
+
+Client(developer, Developer, Developer client device)
+
+Slack(slack, Slack, Slack)
+
+DEV_GITHUB_BADGE(github, GitHub) {
+  DEV_GIT_BRANCH(gitBranchFeature, feature\nbranch) #White
+  DEV_GIT_BRANCH(gitBranchDevelop, develop\nbranch) #White
+  DEV_GIT_BRANCH(gitBranchMain, main\nbranch) #White
+  DEV_GIT_PULL_REQUEST(gitPRDevelop, Pull Request\nRequire 2 approves) #White
+  DEV_GIT_PULL_REQUEST(gitPRMain, Pull Request\nRequire 1 approves) #White
+}
+
+Cloudalt(awesome-dev, Awesome app dev account, "Awesome app dev account") {
+  CodeBuild(codeBuildTestDev, "CodeBuild\nTesting", "CodeBuild Testing")
+  SimpleStorageService(s3Dev, "S3", "Store test reports")
+  CodeBuild(codeBuildDeployDev, "CodeBuild\nDeploy", "CodeBuild Deploy")
+  CloudDevelopmentKit(cdkDev, "CDK", "CDK")
+  CloudFormation(cloudformationDev, "CloudFormation", "CloudFormation")
+  CloudFormationTemplate(cloudformationTemplateDev, "CloudFormation\nTemplate", "CloudFormation Template")
+
+  Cloud(awesome-dev-app, dev stage application\nhttps://awesome.example.dev, dev) {
+    CloudFormationStack(cloudformationStackDev, "CloudFormation\nStack - Dev", "CloudFormationStack")
+    IdentityAccessManagementRole(iamRoleDev, "IAM Role", "IAM Role")
+    CloudFront(cloudFrontDev, "CloudFront", "CloudFront")
+    SimpleStorageService(s3Dev, "S3", "Host static website")
+    APIGateway(apiGatewayDev, "API Gateway", "API Gateway")
+    Lambda(lambdaDev, "Lambda", "Delete user mapping info")
+    DynamoDB(dynamoDBDev, "DynamoDB", "DynamoDB")
+  }
+}
+
+Cloudalt(awesome-prod, Awesome app prod account, "Awesome app prod account") {
+  CodeBuild(codeBuildDeployProd, "CodeBuild\nDeploy", "CodeBuild Deploy")
+  CloudDevelopmentKit(cdkProd, "CDK", "CDK")
+  CloudFormation(cloudformationProd, "CloudFormation", "CloudFormation")
+  CloudFormationTemplate(cloudformationTemplateProd, "CloudFormation\nTemplate", "CloudFormation Template")
+
+  Cloud(awesome-prod-app, prod stage application\nhttps://awesome.example.com, prod) {
+    CloudFormationStack(cloudformationStackProd, "CloudFormation\nStack - Prod", "CloudFormationStack")
+    IdentityAccessManagementRole(iamRoleProd, "IAM Role", "IAM Role")
+    CloudFront(cloudFrontProd, "CloudFront", "CloudFront")
+    SimpleStorageService(s3Prod, "S3", "Host static website")
+    APIGateway(apiGatewayProd, "API Gateway", "API Gateway")
+    Lambda(lambdaProd, "Lambda", "Delete user mapping info")
+    DynamoDB(dynamoDBProd, "DynamoDB", "DynamoDB")
+  }
+}
+
+developer 0--> gitBranchFeature : Push
+gitBranchFeature 0-> gitPRDevelop : Member creates PR
+gitPRDevelop 0-> gitBranchDevelop : merge
+gitBranchDevelop 0-> gitPRMain : Manager creates PR
+gitPRMain 0-> gitBranchMain : merge
+gitPRDevelop 0-up-> slack : Notify
+gitPRMain 0-up-> slack : Notify
+slack 0-left-> developer : Display
+
+gitPRDevelop 0--> codeBuildTestDev : Create/Update PR
+codeBuildTestDev 0--> s3Dev : Upload test report
+gitBranchDevelop 0--> codeBuildDeployDev : Update branch
+codeBuildDeployDev 0-> cdkDev
+cdkDev 0-> cloudformationTemplateDev : synth
+cloudformationTemplateDev 0-> cloudformationDev : Generate ChangeSet
+cloudformationDev 0--> cloudformationStackDev : Update stack \n& Deploy stage
+gitBranchMain 0--> codeBuildDeployProd : Update branch
+codeBuildDeployProd 0-> cdkProd
+cdkProd 0-> cloudformationTemplateProd : synth
+cloudformationTemplateProd 0-> cloudformationProd : Generate ChangeSet
+cloudformationProd 0--> cloudformationStackProd : Update stack \n& Deploy stage
+
+@enduml
+
+
+```
+
+</div></details>
+
+![sample05_cicd.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/110368/c3f1b390-b97a-ca55-b28c-9f4ac1072c9c.png)
 
 ### Tips
 
@@ -661,7 +779,7 @@ PlantUML で構成図を作成する方法について述べてきましたが�
 
 なお、私のチームでは上長が PlantUML での構成図づくりを採用をしてくれました。
 
-![](assets/slack-comment.png)
+![slack-comment.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/110368/7252641f-7330-3b2a-6698-d455d1c06858.png)
 
 この記事が世界中の構成図の維持に少しでも貢献すれば幸いです。
 
@@ -685,7 +803,6 @@ PlantUML で構成図を作成する方法について述べてきましたが�
 - [PlantUML のレイアウトのコツと指定方法についてのまとめ](https://zenn.dev/kitabatake/articles/plantuml-layout)
 - [PlantUML Cheat Sheet](https://qiita.com/ogomr/items/0b5c4de7f38fd1482a48)
 - [PlantUML 使い方メモ](https://qiita.com/opengl-8080/items/98c510b8ca060bdd2ea3)
-- https://qiita.com/opengl-8080/items/98c510b8ca060bdd2ea3
 - [UML の爆速プレビュー環境を Visual Studio Code + PlantUML Server on Docker で簡単に構築する | DevelopersIO](https://dev.classmethod.jp/articles/plantuml-server-on-docker/)
 - [PlantUML サーバを Docker で 1 分でサクッと構築＋ VSCode でプレビューする | SyachikuLOG](https://syachiku.net/plantuml-docker/)
 - [AWS アーキテクチャー図 構成図を自動生成するソリューションを紹介します | DevelopersIO](https://dev.classmethod.jp/articles/gettingstart-aws-perspective/)

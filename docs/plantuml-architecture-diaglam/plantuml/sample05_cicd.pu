@@ -1,0 +1,111 @@
+@startuml sample05_cicd
+
+title Awesome service ~ CI/CD ~
+' left to right direction
+!define AzurePuml https://raw.githubusercontent.com/plantuml-stdlib/Azure-PlantUML/release/2-1/dist
+!includeurl AzurePuml/AzureCommon.puml
+!includeurl AzurePuml/General/Azure.puml
+!includeurl AzurePuml/AzureSimplified.puml
+
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v10.0/dist
+!includeurl AWSPuml/AWSCommon.puml
+!includeurl AWSPuml/General/Client.puml
+!includeurl AWSPuml/GroupIcons/Cloud.puml
+!includeurl AWSPuml/GroupIcons/Cloudalt.puml
+
+!includeurl AWSPuml/SecurityIdentityCompliance/IdentityAccessManagementRole.puml
+!includeurl AWSPuml/NetworkingContentDelivery/CloudFront.puml
+!includeurl AWSPuml/ApplicationIntegration/APIGateway.puml
+!includeurl AWSPuml/Compute/Lambda.puml
+!includeurl AWSPuml/Storage/SimpleStorageService.puml
+!includeurl AWSPuml/Database/DynamoDB.puml
+!includeurl AWSPuml/DeveloperTools/CodeBuild.puml
+!includeurl AWSPuml/DeveloperTools/CloudDevelopmentKit.puml
+!includeurl AWSPuml/ManagementGovernance/CloudFormation.puml
+!includeurl AWSPuml/ManagementGovernance/CloudFormationChangeSet.puml
+!includeurl AWSPuml/ManagementGovernance/CloudFormationStack.puml
+!includeurl AWSPuml/ManagementGovernance/CloudFormationTemplate.puml
+
+!includeurl AWSPuml/AWSSimplified.puml
+
+!define ICONURL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v2.3.0
+!includeurl ICONURL/common.puml
+!includeurl ICONURL/devicons/github_badge.puml
+!includeurl ICONURL/devicons/git.puml
+!includeurl ICONURL/devicons/git_branch.puml
+!includeurl ICONURL/devicons/git_pull_request.puml
+!includeurl ICONURL/devicons/git_merge.puml
+
+!include ./custom.pu
+
+Client(developer, Developer, Developer client device)
+
+Slack(slack, Slack, Slack)
+
+DEV_GITHUB_BADGE(github, GitHub) {
+  DEV_GIT_BRANCH(gitBranchFeature, feature\nbranch) #White
+  DEV_GIT_BRANCH(gitBranchDevelop, develop\nbranch) #White
+  DEV_GIT_BRANCH(gitBranchMain, main\nbranch) #White
+  DEV_GIT_PULL_REQUEST(gitPRDevelop, Pull Request\nRequire 2 approves) #White
+  DEV_GIT_PULL_REQUEST(gitPRMain, Pull Request\nRequire 1 approves) #White
+}
+
+Cloudalt(awesome-dev, Awesome app dev account, "Awesome app dev account") {
+  CodeBuild(codeBuildTestDev, "CodeBuild\nTesting", "CodeBuild Testing")
+  SimpleStorageService(s3Dev, "S3", "Store test reports")
+  CodeBuild(codeBuildDeployDev, "CodeBuild\nDeploy", "CodeBuild Deploy")
+  CloudDevelopmentKit(cdkDev, "CDK", "CDK")
+  CloudFormation(cloudformationDev, "CloudFormation", "CloudFormation")
+  CloudFormationTemplate(cloudformationTemplateDev, "CloudFormation\nTemplate", "CloudFormation Template")
+
+  Cloud(awesome-dev-app, dev stage application\nhttps://awesome.example.dev, dev) {
+    CloudFormationStack(cloudformationStackDev, "CloudFormation\nStack - Dev", "CloudFormationStack")
+    IdentityAccessManagementRole(iamRoleDev, "IAM Role", "IAM Role")
+    CloudFront(cloudFrontDev, "CloudFront", "CloudFront")
+    SimpleStorageService(s3Dev, "S3", "Host static website")
+    APIGateway(apiGatewayDev, "API Gateway", "API Gateway")
+    Lambda(lambdaDev, "Lambda", "Delete user mapping info")
+    DynamoDB(dynamoDBDev, "DynamoDB", "DynamoDB")
+  }
+}
+
+Cloudalt(awesome-prod, Awesome app prod account, "Awesome app prod account") {
+  CodeBuild(codeBuildDeployProd, "CodeBuild\nDeploy", "CodeBuild Deploy")
+  CloudDevelopmentKit(cdkProd, "CDK", "CDK")
+  CloudFormation(cloudformationProd, "CloudFormation", "CloudFormation")
+  CloudFormationTemplate(cloudformationTemplateProd, "CloudFormation\nTemplate", "CloudFormation Template")
+
+  Cloud(awesome-prod-app, prod stage application\nhttps://awesome.example.com, prod) {
+    CloudFormationStack(cloudformationStackProd, "CloudFormation\nStack - Prod", "CloudFormationStack")
+    IdentityAccessManagementRole(iamRoleProd, "IAM Role", "IAM Role")
+    CloudFront(cloudFrontProd, "CloudFront", "CloudFront")
+    SimpleStorageService(s3Prod, "S3", "Host static website")
+    APIGateway(apiGatewayProd, "API Gateway", "API Gateway")
+    Lambda(lambdaProd, "Lambda", "Delete user mapping info")
+    DynamoDB(dynamoDBProd, "DynamoDB", "DynamoDB")
+  }
+}
+
+developer 0--> gitBranchFeature : Push
+gitBranchFeature 0-> gitPRDevelop : Member creates PR
+gitPRDevelop 0-> gitBranchDevelop : merge
+gitBranchDevelop 0-> gitPRMain : Manager creates PR
+gitPRMain 0-> gitBranchMain : merge
+gitPRDevelop 0-up-> slack : Notify
+gitPRMain 0-up-> slack : Notify
+slack 0-left-> developer : Display
+
+gitPRDevelop 0--> codeBuildTestDev : Create/Update PR
+codeBuildTestDev 0--> s3Dev : Upload test report
+gitBranchDevelop 0--> codeBuildDeployDev : Update branch
+codeBuildDeployDev 0-> cdkDev
+cdkDev 0-> cloudformationTemplateDev : synth
+cloudformationTemplateDev 0-> cloudformationDev : Generate ChangeSet
+cloudformationDev 0--> cloudformationStackDev : Update stack \n& Deploy stage
+gitBranchMain 0--> codeBuildDeployProd : Update branch
+codeBuildDeployProd 0-> cdkProd
+cdkProd 0-> cloudformationTemplateProd : synth
+cloudformationTemplateProd 0-> cloudformationProd : Generate ChangeSet
+cloudformationProd 0--> cloudformationStackProd : Update stack \n& Deploy stage
+
+@enduml
