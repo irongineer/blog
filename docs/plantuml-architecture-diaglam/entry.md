@@ -1,3 +1,5 @@
+（更新履歴： 構成図サンプルに（1）サーバレスアーキテクチャ（Amplify）と（3）CI/CD を追記しました）
+
 本記事は株式会社 [Works Human Intelligence](https://www.works-hi.co.jp/) の [アドベントカレンダー](https://qiita.com/advent-calendar/2021/advent-works-hi) の 20 日目の記事となります。
 
 昨日は @h53 さんの [情報処理安全確保支援士試験（SC）合格体験記](https://qiita.com/h53/items/c3867ee6194663f19284) でした。
@@ -69,7 +71,7 @@ AWS では以下のようなパワポ向けのアイコンセットも提供さ�
 私の周りでは diagrams.net を利用して構成図を作成している人がダントツで多い気がします。
 オンライン上で作成できるのはもちろん、[Visual Studio Code の拡張機能](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio) なども提供されています。
 操作方法も直感的で特にキャッチアップを要せずとも描き始めることができます。
-そして非常にキレイな構成図を作成することができます。
+そして非常にキレイな構成図を作成できます。
 
 しかし、複雑な図になればなるほどメンテナンスは煩雑な作業になってきます。
 それが一度ならいいですが、仕様変更が連続して起きたときはストレスフルな作業になることが予想できます。
@@ -164,7 +166,7 @@ VSCode 左サイドバーにある拡張機能メニューを開きます。
 
 ![vscode-extension-plantuml-settings.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/110368/902af28e-e4e8-5bad-a1d8-8ce8fa709537.png)
 
-ただし、私の端末（Mac）ではこれらの設定を行わずとも次の手順の Preview ができたため、次に進んで描画できる人は特に設定は不要です（JAVA と GraphViz が端末にインストールされている必要があるようです。無意識にインストールしていた可能性はあります・・・）。
+ただし、私の端末（Mac）ではこれらの設定を行わずとも次の手順の Preview ができたため、次に進んで描画できる人は特に設定は不要です（JAVA と GraphViz が端末にインストールされている必要があるようです。無意識にインストールしていた可能性はあります…）。
 Ubuntu 20.04 では設定なしで Preview を実行することはできませんでした。
 
 また、描画のスピードを高速にしたいという人も、PlantUML Server をセットアップするといいかもしれません。
@@ -262,9 +264,9 @@ lambda 0--> dynamodb: Put item
 
 コード内のコメントにも記載しましたが、PlantUML で構成図を描くときの基本の型は
 
-（1） インポート
-（2） 宣言
-（3） 利用
+（1）インポート
+（2）宣言
+（3）利用
 
 です。
 複雑な構成図になってもこの型は変わりません。
@@ -274,39 +276,53 @@ lambda 0--> dynamodb: Put item
 基本は「PlantUML <利用するサービス名>」でググりましょう。
 「PlantUML AWS」のようなイメージです。
 
+または、[PlantUML 公式の Standard Library ページ](http://plantuml.com/stdlib)（リポジトリは [plantuml-stdlib](https://github.com/plantuml/plantuml-stdlib)）を覗くと色々なアイコンが利用できることが分かります。
+
 たとえば、有名所では以下があります。
 
 #### AWS
 
-（トップページ）
+（トップページ）。
 https://github.com/awslabs/aws-icons-for-plantuml
 
-（アイコン一覧）
+（アイコン一覧）。
 https://github.com/awslabs/aws-icons-for-plantuml/blob/main/AWSSymbols.md
 
 #### GCP
 
-（トップページ）
+（トップページ）。
 https://github.com/Crashedmind/PlantUML-icons-GCP
 
-（アイコン一覧）
+（アイコン一覧）。
 https://github.com/Crashedmind/PlantUML-icons-GCP/blob/master/Symbols.md
 
 #### Azure
 
-（トップページ）
+（トップページ）。
 https://github.com/plantuml-stdlib/Azure-PlantUML
 
-（アイコン一覧）
+（アイコン一覧）。
 https://github.com/plantuml-stdlib/Azure-PlantUML/blob/master/AzureSymbols.md
+
+#### Kubernetes
+
+（トップページ）。
+https://github.com/plantuml-stdlib/plantuml-kubernetes-sprites
 
 #### その他アイコン
 
-（トップページ）
+（トップページ）。
 https://github.com/tupadr3/plantuml-icon-font-sprites
 
-（アイコン一覧）
+（アイコン一覧）。
 https://github.com/tupadr3/plantuml-icon-font-sprites/blob/master/devicons/index.md
+
+や
+
+https://github.com/tupadr3/plantuml-icon-font-sprites/blob/master/font-awesome-5/index.md
+
+とかいろいろあるので探してみてください。
+（font-awesome-5 や devicons2 にサードパーティのロゴから一般的なアイコン（リンクアイコンなど）までたくさんあったので個人的に感動しています）
 
 ### 目当てのアイコンがない場合
 
@@ -409,11 +425,142 @@ lambda 0--> dynamodb: Put item
 その他、PlantUML で作成した構成図のサンプルを置いておきます。
 （時間の都合上一部しか間に合わなかったため、後ほど追記します）
 
-#### （1）サーバレスアーキテクチャ
+#### （1）サーバレスアーキテクチャ（Amplify）
 
-（後日掲載予定）
+[Amplify SNS Workshop の構成図](https://amplify-sns.workshop.aws/ja/10_getting_started/00_what_you_build.html) をベースにしています。
 
-#### （2） モニタリング
+<details><summary>PlantUML コード</summary><div>
+
+```
+@startuml sample03_amplify
+
+title Awesome service ~ Serverless App ~
+left to right direction
+
+' ① アイコンの定義 ＆ インポート
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v11.1/dist
+!includeurl AWSPuml/AWSCommon.puml
+!includeurl AWSPuml/General/Client.puml
+!includeurl AWSPuml/General/User.puml
+!includeurl AWSPuml/GroupIcons/Region.puml
+!includeurl AWSPuml/GroupIcons/Cloudalt.puml
+!includeurl AWSPuml/GroupIcons/ServerContents.puml
+
+!includeurl AWSPuml/SecurityIdentityCompliance/IdentityandAccessManagement.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/IdentityAccessManagementRole.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/IdentityAccessManagementPermissions.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/IdentityAccessManagementAWSSTSAlternate.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/WAF.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/WAFFilteringRule.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/Cognito.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/CertificateManager.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/KeyManagementService.puml
+!includeurl AWSPuml/ManagementGovernance/SystemsManagerParameterStore.puml
+!includeurl AWSPuml/ManagementGovernance/CloudWatch.puml
+!includeurl AWSPuml/ManagementGovernance/CloudWatchLogs.puml
+!includeurl AWSPuml/ManagementGovernance/CloudWatchAlarm.puml
+!includeurl AWSPuml/ManagementGovernance/CloudWatchRule.puml
+!includeurl AWSPuml/ManagementGovernance/CloudTrail.puml
+!includeurl AWSPuml/ManagementGovernance/Chatbot.puml
+!includeurl AWSPuml/DeveloperTools/XRay.puml
+!includeurl AWSPuml/DeveloperTools/CodeBuild.puml
+
+!includeurl AWSPuml/NetworkingContentDelivery/Route53.puml
+!includeurl AWSPuml/NetworkingContentDelivery/CloudFront.puml
+!includeurl AWSPuml/NetworkingContentDelivery/ElasticLoadBalancingApplicationLoadBalancer.puml
+!includeurl AWSPuml/ApplicationIntegration/APIGateway.puml
+!includeurl AWSPuml/ApplicationIntegration/AppSync.puml
+
+!includeurl AWSPuml/Compute/Lambda.puml
+!includeurl AWSPuml/Compute/LambdaLambdaFunction.puml
+!includeurl AWSPuml/Analytics/OpenSearchService.puml
+!includeurl AWSPuml/Storage/SimpleStorageService.puml
+!includeurl AWSPuml/Database/DynamoDB.puml
+!includeurl AWSPuml/Database/DynamoDBTable.puml
+!includeurl AWSPuml/AWSSimplified.puml
+!includeurl AWSPuml/FrontEndWebMobile/Amplify.puml
+
+!define ICONURL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v2.4.0
+!includeurl ICONURL/common.puml
+!includeurl ICONURL/font-awesome-5/google.puml
+!includeurl ICONURL/font-awesome-5/apple.puml
+!includeurl ICONURL/font-awesome-5/facebook.puml
+!includeurl ICONURL/font-awesome-5/amazon.puml
+!includeurl ICONURL/font-awesome-5/openid.puml
+!includeurl ICONURL/material/vpn_key.puml
+!includeurl ICONURL/font-awesome-5/key.puml
+
+' ② 利用するアイコンを宣言
+User(user, User, User)
+
+Client(developer, Developer, Developer)
+
+FA5_KEY(idp, Id Providers) {
+  FA5_GOOGLE(google, Google)
+  FA5_AMAZON(amazon, Amazon)
+  FA5_FACEBOOK(facebook, Facebook)
+  FA5_APPLE(apple, Apple)
+  FA5_OPENID(oidc, OIDC)
+  MATERIAL_VPN_KEY(saml, SAML)
+}
+
+Cloudalt(awesomeAppAws, Awesome Service, Awesome Service) {
+
+  Amplify(amplify, Amplify Console, Amplify Console)
+
+  Route53(route53, Route 53, Route 53)
+  CertificateManager(acm, ACM, ACM)
+
+  WAF(waf, WAF, WAF) {
+    WAFFilteringRule(wafFilteringRuleAPI, WebACL for API, WebACL for API)
+    WAFFilteringRule(wafFilteringRuleCF, WebACL for CF, WebACL for CF)
+  }
+  CloudFront(cloudFront, CloudFront, CloudFront)
+  SimpleStorageService(s3, "S3\nSSE (AES-256)\nStatic website hosting", "Static website hosting")
+
+  Cognito(cognito, Cognito, Cognito)
+  ' IdentityAccessManagementAWSSTSAlternate(sts, STS, STS)
+
+  AppSync(appSync, AppSync, AppSync)
+  Lambda(lambda, Lambda, Lambda)
+  OpenSearchService(openSearch, OpenSearch, OpenSearch)
+  DynamoDB(dynamoDB, DynamoDB, DynamoDB) {
+    DynamoDBTable(followRelationshipTable, FollowRelationship Table, FollowRelationship Table)
+    DynamoDBTable(timelineTable, Timeline table, Timeline table)
+    DynamoDBTable(postTable, Post Table, Post Table)
+  }
+}
+
+' ③ アイコンの関係を記述
+developer -> amplify: Develop & Delivery app
+
+user --> cognito: Authenticate
+cognito -> idp: Get tokens
+
+user ---> wafFilteringRuleCF: Access site
+wafFilteringRuleCF --> cloudFront: Fetch HTML/CSS/JS
+cloudFront --> s3
+
+user ---> wafFilteringRuleAPI: API Call
+wafFilteringRuleAPI --> appSync: API Call
+appSync --> followRelationshipTable: Read/Create
+appSync --> timelineTable: Read
+appSync --> postTable: Read
+
+appSync --> lambda: Call
+lambda --> followRelationshipTable: Read
+lambda --> timelineTable: Create
+lambda --> postTable: Create
+
+appSync --> openSearch: Full-text search
+postTable ..> openSearch: Replicate
+```
+
+</div></details>
+
+![sample03_amplify.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/110368/e20c04ea-7a95-2812-4203-0e7ef2af6fca.png)
+
+#### （2）モニタリング
 
 <details><summary>PlantUML コード</summary><div>
 
@@ -552,7 +699,7 @@ developer 0..> s3Result #red
 
 ![sample04_monitoring.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/110368/b96e14cb-96aa-c354-aa0a-348f1a2f5457.png)
 
-#### （3） CI/CD
+#### （3）CI/CD
 
 <details><summary>PlantUML コード</summary><div>
 
@@ -748,7 +895,7 @@ Push 時や PR 提出時に画像出力できるのであれば、とてもい�
 
 ## 構成図以外での PlantUML 活用
 
-PlantUML で構成図を作成する方法について述べてきましたが、「PlantUML はもっとすごいんだぞ！習得できると末永く使えるスキルなんだぞ！」という事例を挙げ連ねていきたいと思います。
+PlantUML で構成図を作成する方法について述べてきましたが、「PlantUML はもっとすごいんだぞ！ 習得できると末永く使えるスキルなんだぞ！」という事例を挙げ連ねていきたいと思います。
 
 - シーケンス図
   - [【新人教育 資料】第 8 章 UML までの道 〜シーケンス図の説明&書いてみよう編〜](https://qiita.com/devopsCoordinator/items/4535c3cce207b114ad6c)

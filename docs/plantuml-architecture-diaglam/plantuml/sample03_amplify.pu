@@ -1,0 +1,122 @@
+@startuml sample03_amplify
+
+title Awesome service ~ Serverless App ~
+left to right direction
+
+' ① アイコンの定義 ＆ インポート
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v11.1/dist
+!includeurl AWSPuml/AWSCommon.puml
+!includeurl AWSPuml/General/Client.puml
+!includeurl AWSPuml/General/User.puml
+!includeurl AWSPuml/GroupIcons/Region.puml
+!includeurl AWSPuml/GroupIcons/Cloudalt.puml
+!includeurl AWSPuml/GroupIcons/ServerContents.puml
+
+!includeurl AWSPuml/SecurityIdentityCompliance/IdentityandAccessManagement.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/IdentityAccessManagementRole.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/IdentityAccessManagementPermissions.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/IdentityAccessManagementAWSSTSAlternate.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/WAF.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/WAFFilteringRule.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/Cognito.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/CertificateManager.puml
+!includeurl AWSPuml/SecurityIdentityCompliance/KeyManagementService.puml
+!includeurl AWSPuml/ManagementGovernance/SystemsManagerParameterStore.puml
+!includeurl AWSPuml/ManagementGovernance/CloudWatch.puml
+!includeurl AWSPuml/ManagementGovernance/CloudWatchLogs.puml
+!includeurl AWSPuml/ManagementGovernance/CloudWatchAlarm.puml
+!includeurl AWSPuml/ManagementGovernance/CloudWatchRule.puml
+!includeurl AWSPuml/ManagementGovernance/CloudTrail.puml
+!includeurl AWSPuml/ManagementGovernance/Chatbot.puml
+!includeurl AWSPuml/DeveloperTools/XRay.puml
+!includeurl AWSPuml/DeveloperTools/CodeBuild.puml
+
+!includeurl AWSPuml/NetworkingContentDelivery/Route53.puml
+!includeurl AWSPuml/NetworkingContentDelivery/CloudFront.puml
+!includeurl AWSPuml/NetworkingContentDelivery/ElasticLoadBalancingApplicationLoadBalancer.puml
+!includeurl AWSPuml/ApplicationIntegration/APIGateway.puml
+!includeurl AWSPuml/ApplicationIntegration/AppSync.puml
+
+!includeurl AWSPuml/Compute/Lambda.puml
+!includeurl AWSPuml/Compute/LambdaLambdaFunction.puml
+!includeurl AWSPuml/Analytics/OpenSearchService.puml
+!includeurl AWSPuml/Storage/SimpleStorageService.puml
+!includeurl AWSPuml/Database/DynamoDB.puml
+!includeurl AWSPuml/Database/DynamoDBTable.puml
+!includeurl AWSPuml/AWSSimplified.puml
+!includeurl AWSPuml/FrontEndWebMobile/Amplify.puml
+
+!define ICONURL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v2.4.0
+!includeurl ICONURL/common.puml
+!includeurl ICONURL/font-awesome-5/google.puml
+!includeurl ICONURL/font-awesome-5/apple.puml
+!includeurl ICONURL/font-awesome-5/facebook.puml
+!includeurl ICONURL/font-awesome-5/amazon.puml
+!includeurl ICONURL/font-awesome-5/openid.puml
+!includeurl ICONURL/material/vpn_key.puml
+!includeurl ICONURL/font-awesome-5/key.puml
+
+' ② 利用するアイコンを宣言
+User(user, User, User)
+
+Client(developer, Developer, Developer)
+
+FA5_KEY(idp, Id Providers) {
+  FA5_GOOGLE(google, Google)
+  FA5_AMAZON(amazon, Amazon)
+  FA5_FACEBOOK(facebook, Facebook)
+  FA5_APPLE(apple, Apple)
+  FA5_OPENID(oidc, OIDC)
+  MATERIAL_VPN_KEY(saml, SAML)
+}
+
+Cloudalt(awesomeAppAws, Awesome Service, Awesome Service) {
+
+  Amplify(amplify, Amplify Console, Amplify Console)
+
+  Route53(route53, Route 53, Route 53)
+  CertificateManager(acm, ACM, ACM)
+
+  WAF(waf, WAF, WAF) {
+    WAFFilteringRule(wafFilteringRuleAPI, WebACL for API, WebACL for API)
+    WAFFilteringRule(wafFilteringRuleCF, WebACL for CF, WebACL for CF)
+  }
+  CloudFront(cloudFront, CloudFront, CloudFront)
+  SimpleStorageService(s3, "S3\nSSE (AES-256)\nStatic website hosting", "Static website hosting")
+
+  Cognito(cognito, Cognito, Cognito)
+  ' IdentityAccessManagementAWSSTSAlternate(sts, STS, STS)
+
+  AppSync(appSync, AppSync, AppSync)
+  Lambda(lambda, Lambda, Lambda)
+  OpenSearchService(openSearch, OpenSearch, OpenSearch)
+  DynamoDB(dynamoDB, DynamoDB, DynamoDB) {
+    DynamoDBTable(followRelationshipTable, FollowRelationship Table, FollowRelationship Table)
+    DynamoDBTable(timelineTable, Timeline table, Timeline table)
+    DynamoDBTable(postTable, Post Table, Post Table)
+  }
+}
+
+' ③ アイコンの関係を記述
+developer -> amplify: Develop & Delivery app
+
+user --> cognito: Authenticate
+cognito -> idp: Get tokens
+
+user ---> wafFilteringRuleCF: Access site
+wafFilteringRuleCF --> cloudFront: Fetch HTML/CSS/JS
+cloudFront --> s3
+
+user ---> wafFilteringRuleAPI: API Call
+wafFilteringRuleAPI --> appSync: API Call
+appSync --> followRelationshipTable: Read/Create
+appSync --> timelineTable: Read
+appSync --> postTable: Read
+
+appSync --> lambda: Call
+lambda --> followRelationshipTable: Read
+lambda --> timelineTable: Create
+lambda --> postTable: Create
+
+appSync --> openSearch: Full-text search
+postTable ..> openSearch: Replicate
