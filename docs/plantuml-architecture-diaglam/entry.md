@@ -18,6 +18,10 @@
 構成図はもちろん、ドキュメントは保守されてこそ価値を発揮するものです。
 この記事では、私が新規サービス開発で実践しているシステム構成図の作成方法・メンテ方法について紹介させていただきます。
 
+なお、本記事で利用したサンプルコードは以下のリポジトリに置いてあります。
+
+https://github.com/irongineer/qiita/tree/main/docs/plantuml-architecture-diaglam/plantuml
+
 ## システム構成図（アーキテクチャ図）とは
 
 言わずもがなですが、前提を確認しておくと「システムの全体像を可視化したもの」です。
@@ -822,6 +826,10 @@ cloudformationProd 0--> cloudformationStackProd : Update stack \n& Deploy stage
 </div></details>
 
 ![sample05_cicd.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/110368/c3f1b390-b97a-ca55-b28c-9f4ac1072c9c.png)
+
+なお、本記事で利用したサンプルコードは以下のリポジトリに置いてあります。
+
+https://github.com/irongineer/qiita/tree/main/docs/plantuml-architecture-diaglam/plantuml
 
 ### Tips
 
