@@ -1,4 +1,8 @@
-（更新履歴： 構成図サンプルに（1）サーバレスアーキテクチャ（Amplify）と（3）CI/CD を追記しました）
+#### 更新履歴
+
+2022/01/17: 構成図サンプルに[（1）サーバレスアーキテクチャ（Amplify）](#1サーバレスアーキテクチャamplify) と[（3）CI/CD](#3cicd) を追記しました
+
+---
 
 本記事は株式会社 [Works Human Intelligence](https://www.works-hi.co.jp/) の [アドベントカレンダー](https://qiita.com/advent-calendar/2021/advent-works-hi) の 20 日目の記事となります。
 
@@ -286,39 +290,39 @@ lambda 0--> dynamodb: Put item
 
 #### AWS
 
-（トップページ）。
+（トップページ）
 https://github.com/awslabs/aws-icons-for-plantuml
 
-（アイコン一覧）。
+（アイコン一覧）
 https://github.com/awslabs/aws-icons-for-plantuml/blob/main/AWSSymbols.md
 
 #### GCP
 
-（トップページ）。
+（トップページ）
 https://github.com/Crashedmind/PlantUML-icons-GCP
 
-（アイコン一覧）。
+（アイコン一覧）
 https://github.com/Crashedmind/PlantUML-icons-GCP/blob/master/Symbols.md
 
 #### Azure
 
-（トップページ）。
+（トップページ）
 https://github.com/plantuml-stdlib/Azure-PlantUML
 
-（アイコン一覧）。
+（アイコン一覧）
 https://github.com/plantuml-stdlib/Azure-PlantUML/blob/master/AzureSymbols.md
 
 #### Kubernetes
 
-（トップページ）。
+（トップページ）
 https://github.com/plantuml-stdlib/plantuml-kubernetes-sprites
 
 #### その他アイコン
 
-（トップページ）。
+（トップページ）
 https://github.com/tupadr3/plantuml-icon-font-sprites
 
-（アイコン一覧）。
+（アイコン一覧）
 https://github.com/tupadr3/plantuml-icon-font-sprites/blob/master/devicons/index.md
 
 や
